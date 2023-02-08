@@ -19,6 +19,13 @@ class Main
      */
     public static function runSimply(array $coins, string $menu): string
     {
+        $amountOfMoney = 0;
+        foreach ($coins as $key => $value) {
+            $amountOfMoney += $key * $value;
+        }
+        if ($menu === 'cola') {
+            $price = 120;
+        }
         return "do implementation";
     }
 
