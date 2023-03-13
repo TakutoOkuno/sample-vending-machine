@@ -8,6 +8,16 @@ declare(strict_types=1);
  */
 class Main
 {
+    public const MENUS = [
+        'cola' => ['price' => 120],
+        'coffee' => ['price' => 150],
+        'energy_drink' => ['price' => 210],
+    ];
+
+    private const MONEY = [
+        10000, 5000, 2000, 1000, 500, 100, 50, 10, 5, 1
+    ];
+
     /**
      * 処理の開始地点
      *
@@ -19,14 +29,20 @@ class Main
      */
     public static function runSimply(array $coins, string $menu): string
     {
-        $amountOfMoney = 0;
-        foreach ($coins as $key => $value) {
-            $amountOfMoney += $key * $value;
+        $amountOfMoney = Main::calculateAmountOfMoney($coins);
+        $price = Main::MENUS[$menu]['price'];
+
+        if ($amountOfMoney === $price) {
+            return 'nochange';
         }
-        if ($menu === 'cola') {
-            $price = 120;
+        // 本来なら適当な処理や返却文言を考える必要あり
+        if (!Main::canBuy($amountOfMoney, $price)) {
+            return '買えませんでした';
         }
-        return "do implementation";
+
+        $amountOfChange = $amountOfMoney - $price;
+
+        return Main::convertChangeDictionaryIntoString(Main::getChangeDictionary($amountOfChange));
     }
 
     /**
@@ -41,5 +57,44 @@ class Main
     public static function run(array $vendingMachineCoins, array $userInput): string
     {
         return "do implementation";
+    }
+
+    private static function calculateAmountOfMoney(array $coins): int
+    {
+        $amountOfMoney = 0;
+        foreach ($coins as $key => $value) {
+            $amountOfMoney += $key * $value;
+        }
+        return $amountOfMoney;
+    }
+
+    private static function canBuy(int $amountOfMoney, int $price): bool
+    {
+        return $amountOfMoney >= $price;
+    }
+
+    private static function getChangeDictionary(int $amountOfChange): array
+    {
+        $changes = [];
+        foreach (Main::MONEY as $money) {
+            if ($amountOfChange < $money) continue;
+            $changes += [$money => 0];
+
+            do {
+                $amountOfChange = $amountOfChange - $money;
+                $changes[$money]++;
+            } while ($amountOfChange - $money >= 0);
+        }
+
+        return $changes;
+    }
+
+    private static function convertChangeDictionaryIntoString($changes): string
+    {
+        $changeString = "";
+        foreach ($changes as $money => $amount) {
+            $changeString .= "$money $amount" . " ";
+        }
+        return substr($changeString, 0, -1);
     }
 }
