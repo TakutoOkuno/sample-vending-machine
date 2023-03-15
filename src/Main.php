@@ -29,20 +29,20 @@ class Main
      */
     public static function runSimply(array $coins, string $menu): string
     {
-        $amountOfMoney = Main::calculateAmountOfMoney($coins);
-        $price = Main::MENUS[$menu]['price'];
+        $amountOfMoney = self::calculateAmountOfMoney($coins);
+        $price = self::MENUS[$menu]['price'];
 
         if ($amountOfMoney === $price) {
             return 'nochange';
         }
         // 本来なら適当な処理や返却文言を考える必要あり
-        if (!Main::canBuy($amountOfMoney, $price)) {
+        if (!self::canBuy($amountOfMoney, $price)) {
             return '買えませんでした';
         }
 
         $amountOfChange = $amountOfMoney - $price;
 
-        return Main::convertChangeDictionaryIntoString(Main::getChangeDictionary($amountOfChange));
+        return self::convertChangeDictionaryIntoString(self::getChangeDictionary($amountOfChange));
     }
 
     /**
@@ -76,7 +76,7 @@ class Main
     private static function getChangeDictionary(int $amountOfChange): array
     {
         $changes = [];
-        foreach (Main::MONEY as $money) {
+        foreach (self::MONEY as $money) {
             if ($amountOfChange < $money) continue;
             $changes += [$money => 0];
 
